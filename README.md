@@ -1,6 +1,8 @@
 # WiseProxy
 ![GitHub](https://img.shields.io/github/license/ExaltedHF/WiseProxy?style=flat-square)
+[![GitHub last commit](https://img.shields.io/github/last-commit/ExaltedHF/WiseProxy.svg?style=flat-square)]()
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/ExaltedHF/WiseProxy?style=flat-square)
+![!Github issues](https://img.shields.io/github/issues/ExaltedHF/WiseProxy?style=flat-square)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/moodiest/Proxy-Checker/issues)
 [![HitCount](http://hits.dwyl.com/ExaltedHF/WiseProxy.svg)](http://hits.dwyl.com/ExaltedHF/WiseProxy)
 
