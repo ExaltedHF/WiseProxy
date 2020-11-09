@@ -112,7 +112,7 @@ namespace WiseProxy
 ╚███╔███╔╝██║███████║███████╗██║     ██║  ██║╚██████╔╝██╔╝ ██╗   ██║   
  ╚══╝╚══╝ ╚═╝╚══════╝╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝ ";
             Console.WriteLine(title);
-            Console.WriteLine("\n\n\n\n");
+            Console.WriteLine("\n\n\n\n\n\n\n\n");
         }
 
         private static void UpdateStatistics()
