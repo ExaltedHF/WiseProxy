@@ -4,50 +4,56 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/moodiest/Proxy-Checker/issues)
 [![HitCount](http://hits.dwyl.com/ExaltedHF/WiseProxy.svg)](http://hits.dwyl.com/ExaltedHF/WiseProxy)
 
-A very simple cross-platform proxy checker written in C# utilizing .NET 5.0
+WiseProxy - A very simple open source cross-platform proxy checker written in C# utilizing [.NET 5.0](https://dotnet.microsoft.com/download/dotnet/5.0), [Leaf.xNet](https://www.nuget.org/packages/Mono.Options/) and [Mono.Options](https://www.nuget.org/packages/Leaf.xNet).
 
 ## Features
 * Command line interface
+* Cross-platform
+* Multi-threaded    
 * HTTP(S), Socks4, Socks4a and Socks5
-* Multi-threaded
-* Customizable timeout
-* Remove duplicates
+* Customizable test URL
+* Customizable timeouts (Proxy & Timeout)
+* Remove proxy duplicates
 * ???
 
 ## Usage
 
-Example:
+### Example
 
-`./WiseProxy --file=proxies.text --out=out.txt --threads=25 --timeout=2000 --type=HTTPS --removeDoubles`
+`./WiseProxy -f proxy2020.txt -o valid.text -t 45 -p SOCKS5 -d`
+
+### Arguments 
 
 ```
-██╗    ██╗██╗███████╗███████╗██████╗ ██████╗  ██████╗ ██╗  ██╗██╗   ██╗
-██║    ██║██║██╔════╝██╔════╝██╔══██╗██╔══██╗██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
-██║ █╗ ██║██║███████╗█████╗  ██████╔╝██████╔╝██║   ██║ ╚███╔╝  ╚████╔╝
-██║███╗██║██║╚════██║██╔══╝  ██╔═══╝ ██╔══██╗██║   ██║ ██╔██╗   ╚██╔╝
-╚███╔███╔╝██║███████║███████╗██║     ██║  ██║╚██████╔╝██╔╝ ██╗   ██║
- ╚══╝╚══╝ ╚═╝╚══════╝╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
-
-Usage: WiseProxy [OPTIONS]
+Usage: $ ./WiseProxy [OPTIONS]
 
 Options:
-  -f, --file=VALUE           Path to text file containing proxies
+  -u, --url=VALUE            The URL used for testing
+                                 Default: 'https://api.ipify.org/'
+                                 Expects raw 'íp'
+  -d, --removeDuplicates     Remove duplicates before checking
+                                 Default: 'False'
+  -f, --file=VALUE           Path to proxy file
                                  Default: 'proxies.txt'
-  -o, --out=VALUE            Path to text file to export working proxies to
+  -o, --out=VALUE            Path to output file
                                  Default: 'out.txt'
-  -t, --threads=VALUE        Amount of threads to run
-                                 Default: '50'
-  -x, --timeout=VALUE        Timeout after x milliseconds
-                                 Default: '2500'
-  -s, --type=VALUE           Type of proxies
+  -t, --threads=VALUE        Number of threads
+                                 Default: '35'
+  -p, --proxyType=VALUE      Type of proxies
                                  Valid: 'HTTP(S)|SOCKS4|SOCKS4A|SOCKS5'
                                  Default: 'HTTPS'
-  -r, --removeDoubles        Removes doubles from proxy file before checking
-                                 Default: 'False'
-  -h, --help                 Prints this and exits
+  -s, --proxyTimeout=VALUE   Timeout for proxy in ms
+                                 Default: '2500'
+  -c, --requestTimeout=VALUE Timeout for request in ms
+                                 Default: '2500'
+  -h, --help                 Prints this output and exits
                                  Default: 'False'
 ```
+
+## To-do
+* Cleanup
+* Let's me know!
 
 ## Screenshot
 
-![CLI](https://i.imgur.com/y7upGu8.png)
+![CLI](https://i.imgur.com/rSQCWre.png)
