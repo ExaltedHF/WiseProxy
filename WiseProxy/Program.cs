@@ -27,7 +27,7 @@ namespace WiseProxy
         {
             var options = new OptionSet
             {
-                "Usage: ProxyChecker [OPTIONS]",
+                "Usage: WiseProxy [OPTIONS]",
                 "",
                 "Options:",
                 {
