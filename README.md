@@ -52,7 +52,7 @@ Options:
 
 ## To-do
 * Cleanup
-* Let's me know!
+* Let me know!
 
 ## Screenshot
 
