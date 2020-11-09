@@ -4,7 +4,7 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/moodiest/Proxy-Checker/issues)
 [![HitCount](http://hits.dwyl.com/ExaltedHF/WiseProxy.svg)](http://hits.dwyl.com/ExaltedHF/WiseProxy)
 
-WiseProxy - A very simple open source cross-platform proxy checker written in C# utilizing [.NET 5.0](https://dotnet.microsoft.com/download/dotnet/5.0), [Leaf.xNet](https://www.nuget.org/packages/Mono.Options/) and [Mono.Options](https://www.nuget.org/packages/Leaf.xNet).
+WiseProxy - A very simple open source cross-platform proxy checker written in C# utilizing [.NET 5.0](https://dotnet.microsoft.com/download/dotnet/5.0), [Leaf.xNet](https://github.com/csharp-leaf/Leaf.xNet) and [Mono.Options](https://www.nuget.org/packages/Mono.Options/).
 
 ## Features
 * Command line interface
