@@ -14,7 +14,7 @@ WiseProxy - A very simple open source cross-platform proxy checker written in C#
 * Multi-threaded    
 * HTTP(S), Socks4, Socks4a and Socks5
 * Customizable test URL
-* Customizable timeouts (Proxy & Timeout)
+* Customizable timeouts (Proxy & Request)
 * Remove proxy duplicates
 * ???
 
@@ -33,8 +33,6 @@ Options:
   -u, --url=VALUE            The URL used for testing
                                  Default: 'https://api.ipify.org/'
                                  Expects raw 'íp'
-  -d, --removeDuplicates     Remove duplicates before checking
-                                 Default: 'False'
   -f, --file=VALUE           Path to proxy file
                                  Default: 'proxies.txt'
   -o, --out=VALUE            Path to output file
@@ -48,6 +46,8 @@ Options:
                                  Default: '2500'
   -c, --requestTimeout=VALUE Timeout for request in ms
                                  Default: '2500'
+  -d, --removeDuplicates     Remove duplicates before checking
+                                 Default: 'False'
   -h, --help                 Prints this output and exits
                                  Default: 'False'
 ```

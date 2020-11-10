@@ -35,38 +35,38 @@ namespace WiseProxy
                 {
                     "u|url=",
                     "The URL used for testing " +
-                    "\n\t Default: 'https://api.ipify.org/'" +
+                    $"\n\t Default: '{_testUrl}'" +
                     "\n\t Expects raw 'íp'",
                     val => { _testUrl = val; }
                 },
                 {
                     "f|file=",
-                    "Path to proxy file \n\t Default: 'proxies.txt'",
+                    $"Path to proxy file \n\t Default: '{_proxyPath}'",
                     val => { _proxyPath = val; }
                 },
                 {
                     "o|out=",
-                    "Path to output file \n\t Default: 'out.txt'",
+                    $"Path to output file \n\t Default: '{_outputPath}'",
                     val => { _outputPath = val; }
                 },
                 {
                     "t|threads=",
-                    "Number of threads \n\t Default: '35'",
+                    $"Number of threads \n\t Default: '{_threads}'",
                     val => { _threads = Convert.ToInt32(val); }
                 },
                 {
                     "p|proxyType=",
-                    "Type of proxies \n\t Valid: 'HTTP(S)|SOCKS4|SOCKS4A|SOCKS5' \n\t Default: 'HTTPS'",
+                    $"Type of proxies \n\t Valid: 'HTTP(S)|SOCKS4|SOCKS4A|SOCKS5' \n\t Default: '{_proxyType}'",
                     val => { _proxyType = val; }
                 },
                 {
                     "s|proxyTimeout=",
-                    "Timeout for proxy in ms \n\t Default: '2500'",
+                    $"Timeout for proxy in ms \n\t Default: '{_proxyTimeout}'",
                     val => { _proxyTimeout = Convert.ToInt32(val); }
                 },
                 {
                     "c|requestTimeout=",
-                    "Timeout for request in ms \n\t Default: '2500'",
+                    $"Timeout for request in ms \n\t Default: '{_requestTimeout}'",
                     val => { _requestTimeout = Convert.ToInt32(val); }
                 },
                 {
@@ -88,13 +88,13 @@ namespace WiseProxy
             }
             catch (OptionException e)
             {
-                Console.WriteLine($"WiseProxy $ {e.Message} - '{e.OptionName}'");
-                Console.WriteLine("WiseProxy $ Try using '--help' for a list of valid options.");
+                Console.WriteLine($"$ {e.Message} - '{e.OptionName}'");
+                Console.WriteLine("$ Try using '--help' for a list of valid options.");
                 return;
             }
 
             DisplayLogo();
-            Console.SetCursorPosition(0, Console.CursorTop - 4);
+            Console.SetCursorPosition(0, 9);
 
             if (_showHelp)
                 options.WriteOptionDescriptions(Console.Out);
@@ -112,14 +112,15 @@ namespace WiseProxy
 ╚███╔███╔╝██║███████║███████╗██║     ██║  ██║╚██████╔╝██╔╝ ██╗   ██║   
  ╚══╝╚══╝ ╚═╝╚══════╝╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝ ";
             Console.WriteLine(title);
-            Console.WriteLine("\n\n\n\n\n\n\n\n");
         }
 
         private static void UpdateStatistics()
         {
             while (true)
             {
-                Console.SetCursorPosition(0, Console.CursorTop - 4);
+                Console.Title =
+                    $"# Checked: {_checkedProxies}/{_totalProxies} # Working: {_workingProxies} # Failed: {_failedProxies}";
+                Console.SetCursorPosition(0, 9);
                 Console.WriteLine(
                     $"# Checked: {_checkedProxies}/{_totalProxies}\n# Working: {_workingProxies}\n# Failed: {_failedProxies}\n");
                 Thread.Sleep(100);
@@ -137,16 +138,14 @@ namespace WiseProxy
             }
             catch (Exception e)
             {
-                Console.SetCursorPosition(0, Console.CursorTop - 2);
-                Console.WriteLine($"WiseProxy $ {e.Message}");
+                Console.WriteLine($"$ {e.Message}");
                 return;
             }
 
             if (_removeDoubles)
                 proxiesList = proxiesList.Distinct().ToList();
-
+            Console.SetCursorPosition(0, 9);
             Task.Factory.StartNew(UpdateStatistics);
-
             Parallel.ForEach(proxiesList, new ParallelOptions {MaxDegreeOfParallelism = _threads}, p =>
             {
                 HttpRequest request = null;
@@ -199,14 +198,14 @@ namespace WiseProxy
             if (_workingProxies > 0)
                 OutputWorkingProxies(workingProxiesList);
             else
-                Console.WriteLine("WiseProxy $ They're all dead Jim, they're all dead... :(\n");
+                Console.WriteLine("$ They're all dead Jim, they're all dead... :(\n");
         }
 
         private static void OutputWorkingProxies(IEnumerable<string> workingProxiesList)
         {
-            Console.WriteLine($"WiseProxy $ Exporting working proxies to {_outputPath}");
+            Console.WriteLine($"$ Exporting working proxies to {_outputPath}");
             File.AppendAllLines(_outputPath, workingProxiesList);
-            Console.WriteLine("WiseProxy $ Successfully wrote working proxies... Have fun ;)\n");
+            Console.WriteLine("$ Successfully wrote working proxies... Have fun ;)\n");
         }
     }
 }
