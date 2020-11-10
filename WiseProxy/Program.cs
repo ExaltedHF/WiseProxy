@@ -118,11 +118,11 @@ namespace WiseProxy
         {
             while (true)
             {
-                Console.Title =
+                var currentString =
                     $"# Checked: {_checkedProxies}/{_totalProxies} # Working: {_workingProxies} # Failed: {_failedProxies}";
+                Console.Title = currentString;
+                Console.WriteLine(currentString);
                 Console.SetCursorPosition(0, 9);
-                Console.WriteLine(
-                    $"# Checked: {_checkedProxies}/{_totalProxies}\n# Working: {_workingProxies}\n# Failed: {_failedProxies}\n");
                 Thread.Sleep(100);
             }
         }
