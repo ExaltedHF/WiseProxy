@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using Leaf.xNet;
@@ -11,6 +12,7 @@ namespace WiseProxy
 {
     internal static class Program
     {
+        private static readonly List<string> WorkingProxiesList = new List<string>();
         private static string _testUrl = "https://api.ipify.org";
         private static string _proxyType = "HTTPS";
         private static string _proxyPath = "proxies.txt";
@@ -116,6 +118,7 @@ namespace WiseProxy
 
         private static void UpdateStatistics()
         {
+            // Todo: Do this with delegates
             while (true)
             {
                 var currentString =
@@ -123,14 +126,12 @@ namespace WiseProxy
                 Console.Title = currentString;
                 Console.WriteLine(currentString);
                 Console.SetCursorPosition(0, 9);
-                Thread.Sleep(100);
             }
         }
 
         private static void CheckProxies()
         {
             List<string> proxiesList;
-            var workingProxiesList = new List<string>();
             try
             {
                 proxiesList = new List<string>(File.ReadAllLines(_proxyPath));
@@ -144,7 +145,6 @@ namespace WiseProxy
 
             if (_removeDoubles)
                 proxiesList = proxiesList.Distinct().ToList();
-            Console.SetCursorPosition(0, 9);
             Task.Factory.StartNew(UpdateStatistics);
             Parallel.ForEach(proxiesList, new ParallelOptions {MaxDegreeOfParallelism = _threads}, p =>
             {
@@ -171,22 +171,27 @@ namespace WiseProxy
                     if (response == p.Split(":")[0])
                     {
                         Interlocked.Increment(ref _workingProxies);
-                        workingProxiesList.Add(p);
+                        WorkingProxiesList.Add(p);
                     }
                     else
                     {
                         Interlocked.Increment(ref _failedProxies);
                     }
                 }
-                catch (HttpException)
+                catch (HttpException e)
                 {
+                    // Todo: Show this to the user
+                    // Console.SetCursorPosition(0, 12);
+                    // Console.WriteLine($"$ {p} - {e.Message}");
                     Interlocked.Increment(ref _failedProxies);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    // Todo: Show this to the user
+                    // Console.WriteLine($"$ : {e.Message}");
                     Interlocked.Increment(ref _failedProxies);
                     if (_workingProxies > 0)
-                        OutputWorkingProxies(workingProxiesList);
+                        OutputWorkingProxies();
                 }
                 finally
                 {
@@ -196,15 +201,75 @@ namespace WiseProxy
             });
 
             if (_workingProxies > 0)
-                OutputWorkingProxies(workingProxiesList);
+                OutputWorkingProxies();
             else
                 Console.WriteLine("$ They're all dead Jim, they're all dead... :(\n");
         }
 
-        private static void OutputWorkingProxies(IEnumerable<string> workingProxiesList)
+        private static void OutputWorkingProxies()
         {
             Console.WriteLine($"$ Exporting working proxies to {_outputPath}");
-            File.AppendAllLines(_outputPath, workingProxiesList);
+
+            if (string.IsNullOrEmpty(_outputPath))
+            {
+                Console.WriteLine("$ You forgot the output path, enter a new one!");
+
+                while (_outputPath != string.Empty)
+                {
+                    Console.Write("$ New output path: ");
+                    _outputPath = Console.ReadLine();
+                }
+            }
+
+            try
+            {
+                File.AppendAllLines(_outputPath, WorkingProxiesList);
+            }
+            catch (Exception e)
+            {
+                // Todo: Not be like this
+                switch (e.InnerException)
+                {
+                    case DirectoryNotFoundException:
+                        Console.WriteLine("$ Directory not found, enter new save path:");
+                        _outputPath = Console.ReadLine();
+                        OutputWorkingProxies();
+                        break;
+                    case FileNotFoundException:
+                        Console.WriteLine("$ File not found, enter new save path:");
+                        _outputPath = Console.ReadLine();
+                        OutputWorkingProxies();
+                        break;
+                    case PathTooLongException:
+                        Console.WriteLine("$ Path too long, enter new save path:");
+                        _outputPath = Console.ReadLine();
+                        OutputWorkingProxies();
+                        break;
+                    case IOException:
+                        Console.WriteLine("$ IO error while writing, enter new save path:");
+                        _outputPath = Console.ReadLine();
+                        OutputWorkingProxies();
+                        break;
+                    case NotSupportedException:
+                        Console.WriteLine("$ Error while writing, enter new save path:");
+                        _outputPath = Console.ReadLine();
+                        OutputWorkingProxies();
+                        break;
+                    case SecurityException:
+                        Console.WriteLine("$ Someone is blocking me, enter new save path:");
+                        _outputPath = Console.ReadLine();
+                        OutputWorkingProxies();
+                        break;
+                    case UnauthorizedAccessException:
+                        Console.WriteLine("$ I am not allowed to write here, enter new save path:");
+                        _outputPath = Console.ReadLine();
+                        OutputWorkingProxies();
+                        break;
+                    default:
+                        throw new Exception();
+                }
+            }
+
             Console.WriteLine("$ Successfully wrote working proxies... Have fun ;)\n");
         }
     }
