@@ -26,9 +26,13 @@ namespace WiseProxy
         private static int _failedProxies;
         private static bool _showHelp;
         private static bool _removeDoubles;
+        private delegate void Statistics();
 
         private static void Main(string[] args)
         {
+            /*
+             * Mono Options for Arguments
+            */    
             var options = new OptionSet
             {
                 "Usage: $ ./WiseProxy [OPTIONS]",
@@ -83,6 +87,9 @@ namespace WiseProxy
                 }
             };
 
+            /*
+             * Check for invalid options
+            */
             try
             {
                 var extra = options.Parse(args);
@@ -104,8 +111,12 @@ namespace WiseProxy
                 CheckProxies();
         }
 
+        /*
+         * Prints the logo
+        */
         private static void DisplayLogo()
         {
+            
             const string title = @"
 ██╗    ██╗██╗███████╗███████╗██████╗ ██████╗  ██████╗ ██╗  ██╗██╗   ██╗
 ██║    ██║██║██╔════╝██╔════╝██╔══██╗██╔══██╗██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
@@ -116,21 +127,25 @@ namespace WiseProxy
             Console.WriteLine(title);
         }
 
+        /*
+         * Updates the statistics
+        */
         private static void UpdateStatistics()
         {
-            // Todo: Do this with delegates
-            while (true)
-            {
+
                 var currentString =
                     $"# Checked: {_checkedProxies}/{_totalProxies} # Working: {_workingProxies} # Failed: {_failedProxies}";
                 Console.Title = currentString;
                 Console.WriteLine(currentString);
                 Console.SetCursorPosition(0, 9);
-            }
         }
 
+        /*
+         * Check the proxies
+        */
         private static void CheckProxies()
         {
+            // Load the proxies
             List<string> proxiesList;
             try
             {
@@ -142,10 +157,13 @@ namespace WiseProxy
                 Console.WriteLine($"$ {e.Message}");
                 return;
             }
-
+            
             if (_removeDoubles)
                 proxiesList = proxiesList.Distinct().ToList();
-            Task.Factory.StartNew(UpdateStatistics);
+
+            Statistics handler = UpdateStatistics;
+
+            // Start checking
             Parallel.ForEach(proxiesList, new ParallelOptions {MaxDegreeOfParallelism = _threads}, p =>
             {
                 HttpRequest request = null;
@@ -197,6 +215,7 @@ namespace WiseProxy
                 {
                     Interlocked.Increment(ref _checkedProxies);
                     request?.Dispose();
+                    handler();
                 }
             });
 
@@ -206,6 +225,9 @@ namespace WiseProxy
                 Console.WriteLine("$ They're all dead Jim, they're all dead... :(\n");
         }
 
+        /*
+         * Writes the working proxies
+        */
         private static void OutputWorkingProxies()
         {
             Console.WriteLine($"$ Exporting working proxies to {_outputPath}");
@@ -256,7 +278,7 @@ namespace WiseProxy
                         OutputWorkingProxies();
                         break;
                     case SecurityException:
-                        Console.WriteLine("$ Someone is blocking me, enter new save path:");
+                        Console.WriteLine("$ Something is blocking me, enter new save path:");
                         _outputPath = Console.ReadLine();
                         OutputWorkingProxies();
                         break;
