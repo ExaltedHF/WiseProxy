@@ -25,14 +25,13 @@ namespace WiseProxy
         private static int _workingProxies;
         private static int _failedProxies;
         private static bool _showHelp;
-        private static bool _removeDoubles;
-        private delegate void Statistics();
+        private static bool _removeDuplicates;
 
         private static void Main(string[] args)
         {
             /*
-             * Mono Options for Arguments
-            */    
+             * Application Arguments
+            */
             var options = new OptionSet
             {
                 "Usage: $ ./WiseProxy [OPTIONS]",
@@ -78,7 +77,7 @@ namespace WiseProxy
                 {
                     "d|removeDuplicates",
                     "Remove duplicates before checking \n\t Default: 'False'",
-                    val => { _removeDoubles = val != null; }
+                    val => { _removeDuplicates = val != null; }
                 },
                 {
                     "h|help",
@@ -88,7 +87,7 @@ namespace WiseProxy
             };
 
             /*
-             * Check for invalid options
+             * Application Arguments - Check for invalid
             */
             try
             {
@@ -112,11 +111,10 @@ namespace WiseProxy
         }
 
         /*
-         * Prints the logo
+         * Display WiseProxy Logo
         */
         private static void DisplayLogo()
         {
-            
             const string title = @"
 ██╗    ██╗██╗███████╗███████╗██████╗ ██████╗  ██████╗ ██╗  ██╗██╗   ██╗
 ██║    ██║██║██╔════╝██╔════╝██╔══██╗██╔══██╗██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
@@ -128,20 +126,19 @@ namespace WiseProxy
         }
 
         /*
-         * Updates the statistics
+         * Display statistics, in title and console
         */
         private static void UpdateStatistics()
         {
-
-                var currentString =
-                    $"# Checked: {_checkedProxies}/{_totalProxies} # Working: {_workingProxies} # Failed: {_failedProxies}";
-                Console.Title = currentString;
-                Console.WriteLine(currentString);
-                Console.SetCursorPosition(0, 9);
+            var currentString =
+                $"# Checked: {_checkedProxies}/{_totalProxies} # Working: {_workingProxies} # Failed: {_failedProxies}";
+            Console.Title = currentString;
+            Console.WriteLine(currentString);
+            Console.SetCursorPosition(0, 9);
         }
 
         /*
-         * Check the proxies
+         * Check all the proxies
         */
         private static void CheckProxies()
         {
@@ -157,8 +154,9 @@ namespace WiseProxy
                 Console.WriteLine($"$ {e.Message}");
                 return;
             }
-            
-            if (_removeDoubles)
+
+            // Clear doubles
+            if (_removeDuplicates)
                 proxiesList = proxiesList.Distinct().ToList();
 
             Statistics handler = UpdateStatistics;
@@ -294,5 +292,7 @@ namespace WiseProxy
 
             Console.WriteLine("$ Successfully wrote working proxies... Have fun ;)\n");
         }
+
+        private delegate void Statistics();
     }
 }
